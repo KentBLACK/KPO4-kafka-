@@ -1,0 +1,51 @@
+server:
+  port: 8080
+
+
+
+spring:
+  application:
+    name: gateway
+  cloud:
+    gateway:
+      routes:
+        - id: orders-service
+          uri: lb://ORDERS-SERVICE
+          predicates:
+            - Path=/api/orders/**
+
+        - id: payments-service
+          uri: lb://PAYMENTS-SERVICE
+          predicates:
+            - Path=/api/accounts/**
+
+springdoc:
+  api-docs:
+    enabled: true
+    path: /v3/api-docs
+  swagger-ui:
+    enabled: true
+    path: /swagger-ui.html
+    url: /v3/api-docs
+    # Ключевая настройка - указываем URL документации сервисов
+    urls:
+      - url: http://localhost:8082/v3/api-docs
+        name: Orders Service
+      - url: http://localhost:8081/v3/api-docs
+        name: Payments Service
+
+  # Отключаем ненужное
+  show-actuator: false
+  model-and-view-allowed: false
+
+  # Настройки для корректной работы через Gateway
+  use-fqn: false
+  default-consumes-media-type: application/json
+  default-produces-media-type: application/json
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+    service-url:
+      defaultZone: ${EUREKA_CLIENT_SERVICEURL_DEFAULTZONE:http://localhost:8761/eureka}

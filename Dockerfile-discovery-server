@@ -1,0 +1,23 @@
+# Stage 1: Build
+FROM maven:3.8.6-eclipse-temurin-17 AS build
+WORKDIR /opt/app
+
+COPY . .
+
+RUN mvn clean package -DskipTests -pl discovery-server -am && \
+    echo "--- TARGET CONTENTS ---" && ls -lah discovery-server/target && \
+    echo "--- JAR CONTENTS ---" && jar tf discovery-server/target/*.jar | head -n 30
+
+
+# Stage 2: Runtime
+FROM eclipse-temurin:17-jre-jammy
+WORKDIR /opt/app
+
+# Пробрасываем порт сервиса
+EXPOSE 8761
+
+# Копируем готовый jar из stage build
+COPY --from=build /opt/app/discovery-server/target/*.jar /opt/app/app.jar
+
+# Команда запуска
+ENTRYPOINT ["java", "-jar", "app.jar"]
