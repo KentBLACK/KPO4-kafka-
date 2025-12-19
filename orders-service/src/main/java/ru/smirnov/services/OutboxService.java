@@ -39,6 +39,7 @@ public class OutboxService {
         for (OutboxMessage msg : unsent) {
             try {
                 kafkaProducer.sendMessage(objectMapper.writeValueAsString(msg));
+                System.out.println("Отправил сообщение на отправку");
                 msg.markAsSent();
             } catch (Exception e) {
                 msg.incrementAttempts(e.getMessage());
