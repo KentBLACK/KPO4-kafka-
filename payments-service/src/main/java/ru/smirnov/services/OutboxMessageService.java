@@ -41,7 +41,7 @@ public class OutboxMessageService {
         List<OutboxMessage> messages = outboxMessageRepository.findBySent(false);
         for (OutboxMessage message : messages) {
             try {
-                kafkaProducer.sendMessage(objectMapper.writeValueAsString(new SendDTO(message.getEventType(), message.getPayload())));
+                kafkaProducer.sendMessage(objectMapper.writeValueAsString(new SendDTO(message.getEventType(), message.getOrderId())));
                 message.markAsSent();
             } catch (JsonProcessingException e){
                 message.setAttempts(message.getAttempts() + 1);
@@ -53,22 +53,22 @@ public class OutboxMessageService {
 
     public static class SendDTO  {
         private String eventType;
-        private String userId;
+        private Long orderId;
 
         public SendDTO() {
         }
 
-        public SendDTO(String eventType, String userId) {
+        public SendDTO(String eventType, Long orderId) {
             this.eventType = eventType;
-            this.userId = userId;
+            this.orderId = orderId;
         }
 
-        public String getUserId() {
-            return userId;
+        public Long getOrderId() {
+            return orderId;
         }
 
-        public void setUserId(String userId) {
-            this.userId = userId;
+        public void setOrderId(Long orderId) {
+            this.orderId = orderId;
         }
 
         public String getEventType() {

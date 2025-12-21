@@ -24,6 +24,10 @@ public class OrderService {
         return orderRepository.findByUserId(userid).orElseThrow(() -> new OrderNotFoundException("Заказ не найден"));
     }
 
+    public Order getOrderById(Long Id){
+        return orderRepository.findById(Id).orElseThrow(() -> new OrderNotFoundException("Заказ не найден"));
+    }
+
     @Transactional
     public void save(Order order){
         orderRepository.save(order);

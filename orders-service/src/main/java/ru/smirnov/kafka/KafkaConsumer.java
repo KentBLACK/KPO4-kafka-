@@ -28,7 +28,7 @@ public class KafkaConsumer {
         System.out.println("Получена информация о заказе: " + message);
         try {
             MessageDTO messageDTO = objectMapper.readValue(message, MessageDTO.class);
-            Order order = orderService.getOrderByUserId(messageDTO.getUserId());
+            Order order = orderService.getOrderById(messageDTO.getOrderId());
             if (messageDTO.getEventType().equals("SUCCESSFUL")){
                 order.setStatus(OrderStatus.FINISHED);
             }

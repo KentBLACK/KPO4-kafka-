@@ -15,6 +15,8 @@ public class MessageDTO {
 
     private String payload;
 
+    public Long orderId;
+
     private LocalDateTime createdAt;
 
     private boolean sent = false;
@@ -36,7 +38,8 @@ public class MessageDTO {
                       boolean sent,
                       LocalDateTime sentAt,
                       int attempts,
-                      String lastError){
+                      String lastError,
+                      Long orderId){
         this.id = id;
         this.aggregateType = aggregateType;
         this.aggregateId = aggregateId;
@@ -47,10 +50,14 @@ public class MessageDTO {
         this.sentAt = sentAt;
         this.attempts = attempts;
         this.lastError = lastError;
+        this.orderId = orderId;
     }
 
     public String getId() { return id; }
     public void setId(String id) { this.id = id; }
+
+    public Long getOrderId() { return orderId; }
+    public void setOrderId(Long orderId) { this.orderId = orderId; }
 
     public String getAggregateType() { return aggregateType; }
     public void setAggregateType(String aggregateType) { this.aggregateType = aggregateType; }

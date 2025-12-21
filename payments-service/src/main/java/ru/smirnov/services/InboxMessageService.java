@@ -30,6 +30,11 @@ public class InboxMessageService {
 
     @Transactional
     public void save(InboxMessage inboxMessage){
+        // Проверка на идемпотентность: если заказ уже обрабатывался, игнорируем дубликат
+        if (inboxMessageRepository.existsByOrderId(inboxMessage.getOrderId())) {
+            System.out.println("Заказ с orderId=" + inboxMessage.getOrderId() + " уже обработан, пропускаем дубликат");
+            return;
+        }
         inboxMessageRepository.save(inboxMessage);
     }
     @Scheduled(
@@ -43,15 +48,16 @@ public class InboxMessageService {
             if (account == null) {
                 accountService.save(new Account(message.getPayload(), 5000));
                 System.out.println("Аккаунт " + message.getPayload() + " создан");
-                OutboxMessage outboxMessage = new OutboxMessage("SUCCESSFUL", message.getPayload());
+                OutboxMessage outboxMessage = new OutboxMessage("SUCCESSFUL", message.getOrderId());
                 outboxMessageService.save(outboxMessage);
             } else {
                 if (account.getBalance() >= 500) {
                     account.setBalance(account.getBalance() - 500);
-                    OutboxMessage outboxMessage = new OutboxMessage("SUCCESSFUL", message.getPayload());
+                    OutboxMessage outboxMessage = new OutboxMessage("SUCCESSFUL", message.getOrderId());
                     outboxMessageService.save(outboxMessage);
+                    accountService.save(account);
                 } else {
-                    OutboxMessage outboxMessage = new OutboxMessage("UNSUCCESSFUL", message.getPayload());
+                    OutboxMessage outboxMessage = new OutboxMessage("UNSUCCESSFUL", message.getOrderId());
                     outboxMessageService.save(outboxMessage);
                 }
             }

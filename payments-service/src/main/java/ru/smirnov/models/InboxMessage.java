@@ -11,8 +11,8 @@ public class InboxMessage {
     @Id
     private String id;
 
-    @Column(name = "event_id", nullable = false, unique = true)
-    private String eventId;
+    @Column(name = "order_id", nullable = false, unique = true)
+    private Long orderId;
 
     @Column(columnDefinition = "TEXT", nullable = false)
     private String payload;
@@ -36,9 +36,9 @@ public class InboxMessage {
         // Пустой конструктор для JPA
     }
 
-    public InboxMessage(String eventId, String payload) {
+    public InboxMessage(Long orderId, String payload) {
         this.id = UUID.randomUUID().toString();
-        this.eventId = eventId;
+        this.orderId = orderId;
         this.payload = payload;
         this.createdAt = LocalDateTime.now();
     }
@@ -62,12 +62,12 @@ public class InboxMessage {
         this.id = id;
     }
 
-    public String getEventId() {
-        return eventId;
+    public Long getOrderId() {
+        return orderId;
     }
 
-    public void setEventId(String eventId) {
-        this.eventId = eventId;
+    public void setOrderId(Long orderId) {
+        this.orderId = orderId;
     }
 
     public String getPayload() {
@@ -129,25 +129,10 @@ public class InboxMessage {
         this.lastError = error;
     }
 
-    // equals и hashCode для eventId (идемпотентность)
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        InboxMessage that = (InboxMessage) o;
-        return eventId.equals(that.eventId);
-    }
-
-    @Override
-    public int hashCode() {
-        return eventId.hashCode();
-    }
-
     @Override
     public String toString() {
         return "InboxMessage{" +
                 "id='" + id + '\'' +
-                ", eventId='" + eventId + '\'' +
                 ", processed=" + processed +
                 ", createdAt=" + createdAt +
                 '}';

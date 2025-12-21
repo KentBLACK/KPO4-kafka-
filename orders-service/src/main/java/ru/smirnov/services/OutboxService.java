@@ -26,7 +26,7 @@ public class OutboxService {
     }
     @Transactional
     public void saveMessage(Order order){
-        OutboxMessage outboxMessage = new OutboxMessage("Order", order.getId().toString(), "ORDER_CREATED", order.getUserId().toString());
+        OutboxMessage outboxMessage = new OutboxMessage("Order", order.getId().toString(), "ORDER_CREATED", order.getUserId().toString(),  order.getId());
         outboxRepository.save(outboxMessage);
     }
 

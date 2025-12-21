@@ -30,7 +30,12 @@ public class PaymentsController {
     @PostMapping()
     @Operation(summary = "Создать пользователя")
     public void createAccount(@RequestBody UserDTO userDTO) {
-        accountService.save(new Account(userDTO.getUserId(), 5000));
+        if (accountService.getAccountByUserId(userDTO.getUserId()) == null) {
+            accountService.save(new Account(userDTO.getUserId(), 5000));
+        }
+        else{
+            throw new RuntimeException("Пользователь уже существует");
+        }
     }
 
     @PostMapping("/upbalance")

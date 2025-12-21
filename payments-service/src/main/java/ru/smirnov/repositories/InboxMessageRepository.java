@@ -9,4 +9,6 @@ import java.util.List;
 @Repository
 public interface InboxMessageRepository extends JpaRepository<InboxMessage, String> {
     List<InboxMessage> findByProcessed(boolean processed);
+    
+    boolean existsByOrderId(Long orderId);
 }

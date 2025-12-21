@@ -14,8 +14,8 @@ public class OutboxMessage {
     @Column(name = "event_type", nullable = false)
     private String eventType;
 
-    @Column(columnDefinition = "TEXT", nullable = false)
-    private String payload;
+    @Column(name = "order_Id")
+    private Long orderId;
 
     @Column(nullable = false)
     private boolean sent = false;
@@ -36,10 +36,10 @@ public class OutboxMessage {
         // Пустой конструктор для JPA
     }
 
-    public OutboxMessage(String eventType, String payload) {
+    public OutboxMessage(String eventType, Long orderId) {
         this.id = UUID.randomUUID().toString();
         this.eventType = eventType;
-        this.payload = payload;
+        this.orderId = orderId;
         this.createdAt = LocalDateTime.now();
     }
 
@@ -62,20 +62,20 @@ public class OutboxMessage {
         this.id = id;
     }
 
+    public Long getOrderId() {
+        return orderId;
+    }
+
+    public void setOrderId(Long orderId) {
+        this.orderId = orderId;
+    }
+
     public String getEventType() {
         return eventType;
     }
 
     public void setEventType(String eventType) {
         this.eventType = eventType;
-    }
-
-    public String getPayload() {
-        return payload;
-    }
-
-    public void setPayload(String payload) {
-        this.payload = payload;
     }
 
     public boolean isSent() {

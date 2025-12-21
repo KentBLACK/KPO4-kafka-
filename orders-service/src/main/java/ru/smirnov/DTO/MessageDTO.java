@@ -3,22 +3,22 @@ package ru.smirnov.DTO;
 public class MessageDTO {
     private String eventType;
 
-    private String userId;
+    private Long orderId;
 
     public MessageDTO() {}
 
-    public MessageDTO(String eventType, String userId)
+    public MessageDTO(String eventType, Long orderId)
     {
         this.eventType = eventType;
-        this.userId = userId;
+        this.orderId = orderId;
     }
 
-    public String getUserId() {
-        return userId;
+    public Long getOrderId() {
+        return orderId;
     }
 
-    public void setUserId(String userId) {
-        this.userId = userId;
+    public void setOrderId(Long orderId) {
+        this.orderId = orderId;
     }
 
     public String getEventType() {

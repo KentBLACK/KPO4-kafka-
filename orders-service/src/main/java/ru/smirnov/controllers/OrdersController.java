@@ -14,7 +14,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @RestController
-@RequestMapping("/api/orders/")
+@RequestMapping("/api/orders")
 @Tag(name = "Заказы", description = "Сервис заказов")
 public class OrdersController {
     private final OrderService orderService;
@@ -24,6 +24,13 @@ public class OrdersController {
     public OrdersController(OrderService orderService, OutboxService outboxService) {
         this.orderService = orderService;
         this.outboxService = outboxService;
+    }
+
+    @GetMapping("/status")
+    @Operation(summary = "Получение статуса заказа по id заказа")
+    public StringDTO getStatus(@RequestParam("orderId") Long orderId){
+        Order order = orderService.getOrderById(orderId);
+        return new StringDTO(order.getStatus().toString());
     }
 
     @GetMapping()
@@ -82,6 +89,24 @@ public class OrdersController {
 
         public void setDescription(String description) {
             this.description = description;
+        }
+    }
+
+    public static class StringDTO{
+        private String value;
+
+        public StringDTO(){}
+
+        public StringDTO(String value){
+            this.value = value;
+        }
+
+        public String getValue() {
+            return value;
+        }
+
+        public void setValue(String value) {
+            this.value = value;
         }
     }
 }

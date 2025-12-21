@@ -1,0 +1,31 @@
+# Stage 1: Build
+FROM maven:3.8.6-eclipse-temurin-17 AS build
+WORKDIR /opt/app
+
+# Копируем весь проект, чтобы Maven видел parent POM
+COPY . .
+
+RUN mvn dependency:purge-local-repository -DreResolve=true
+
+
+# Собираем только модуль frontend-service и его зависимости (parent POM)
+RUN mvn clean install -DskipTests -Dmaven.test.skip=true -pl frontend-service -am
+
+# Stage 2: Runtime
+FROM eclipse-temurin:17-jre-jammy
+WORKDIR /opt/app
+
+# Пробрасываем порт сервиса
+EXPOSE 8083
+
+# Устанавливаем netcat и wget для healthcheck
+RUN apt-get update && apt-get install -y netcat wget && rm -rf /var/lib/apt/lists/*
+
+# Копируем готовый jar из stage build
+COPY --from=build /opt/app/frontend-service/target/*.jar /opt/app/app.jar
+
+COPY wait-for-tcp.sh .
+RUN chmod +x wait-for-tcp.sh
+
+ENTRYPOINT ["bash", "-c", "./wait-for-tcp.sh discovery-server 8761 60 && java -jar app.jar"]
+

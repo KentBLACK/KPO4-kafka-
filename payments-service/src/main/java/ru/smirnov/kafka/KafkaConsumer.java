@@ -26,7 +26,7 @@ public class KafkaConsumer {
         System.out.println("Получил сообщение из order_topic: " + message);
         try {
             MessageDTO messageDTO = objectMapper.readValue(message, MessageDTO.class);
-            inboxMessageService.save(new InboxMessage(messageDTO.getId(), messageDTO.getPayload()));
+            inboxMessageService.save(new InboxMessage(messageDTO.getOrderId(), messageDTO.getPayload()));
         } catch (JsonProcessingException e) {
             throw new ConvertToDTOException(message = "Преобразование в DTO не получилось");
         }

@@ -23,6 +23,9 @@ public class OutboxMessage {
     @Column(columnDefinition = "TEXT", nullable = false)
     private String payload;
 
+    @Column(name = "order_id", nullable = false)
+    private Long orderId;
+
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
 
@@ -51,13 +54,14 @@ public class OutboxMessage {
     public OutboxMessage() {}
 
     public OutboxMessage(String aggregateType, String aggregateId,
-                         String eventType, String payload) {
+                         String eventType, String payload, Long orderId) {
         this.id = UUID.randomUUID().toString();
         this.aggregateType = aggregateType;
         this.aggregateId = aggregateId;
         this.eventType = eventType;
         this.payload = payload;
         this.createdAt = LocalDateTime.now();
+        this.orderId = orderId;
     }
 
     public void markAsSent() {
@@ -69,6 +73,9 @@ public class OutboxMessage {
         this.attempts++;
         this.lastError = error;
     }
+
+    public Long getOrderId() { return orderId; }
+    public void setOrderId(Long orderId) { this.orderId = orderId; }
 
     public String getId() { return id; }
     public void setId(String id) { this.id = id; }
